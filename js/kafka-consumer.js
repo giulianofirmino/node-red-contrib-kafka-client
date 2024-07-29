@@ -2,25 +2,15 @@ module.exports = function(RED) {
     function KafkaConsumerNode(config) {
         RED.nodes.createNode(this,config);
         var node = this;
-
-        function e1() {
-            var u='',i=0;
-            while(i++<36) {
-                var c='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'[i-1],r=Math.random()*16|0,v=c=='x'?r:(r&0x3|0x8);
-                u+=(c=='-'||c=='4')?c:v.toString(16)
-            }
-            return u;
-        }
             
         node.init = function(){
             const kafka = require('kafka-node'); 
+            const {v4: uuidv4} = require('uuid');
 
             var broker = RED.nodes.getNode(config.broker);        
             var options = broker.getOptions();
 
-            var topic = config.topic;
-    
-            options.groupId = 'nodered_kafka_client_' + (!config.groupid || config.groupid === '' ? e1() : config.groupid);
+            options.groupId = config.groupid || uuidv4();
             options.fromOffset = config.fromOffset;
             options.outOfRangeOffset = config.outOfRangeOffset;
             options.fetchMinBytes = config.minbytes || 1;
@@ -29,9 +19,9 @@ module.exports = function(RED) {
 
             node.lastMessageTime = null;
 
-            node.consumerGroup = new kafka.ConsumerGroup(options, topic);
-    
             node.status({fill:"yellow",shape:"ring",text:"Initializing"});
+
+            node.consumerGroup = new kafka.ConsumerGroup(options, config.topic);
 
             node.onConnect = function(){
                 node.lastMessageTime = new Date().getTime();
