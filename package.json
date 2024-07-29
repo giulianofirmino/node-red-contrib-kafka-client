@@ -1,6 +1,6 @@
 {
     "name": "node-red-contrib-kafka-client",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Node-RED Kafka Consumer and Producer",
     "node-red": {
         "nodes": {
@@ -38,6 +38,7 @@
     "homepage": "https://github.com/emrebekar/node-red-contrib-kafka-client/blob/master/README.md",
     "license": "MIT",
     "dependencies": {
+    	"uuid": "^10.0.0",
         "kafka-node": "^5.0.0"
     }
 }
